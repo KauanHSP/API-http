@@ -1,0 +1,21 @@
+{
+  "name": "api-http",
+  "version": "1.0.0",
+  "description": "��#\u0000 \u0000A\u0000P\u0000I\u0000-\u0000h\u0000t\u0000t\u0000p\u0000\r\u0000 \u0000",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KauanHSP/API-http.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/KauanHSP/API-http/issues"
+  },
+  "homepage": "https://github.com/KauanHSP/API-http#readme"
+}
