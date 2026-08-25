@@ -46,6 +46,19 @@ const server = http.createServer((req, res) => {
 
             }
         })
+    } else if (req.method == 'GET' && req.url.startsWith('/tarefas/buscar')) {
+        const urlOBJ = new URL(req.url, `http://${req.headers.host}`);
+        const titulo = urlOBJ.searchParams.get('titulo');
+
+        if (!titulo) {
+            res.statusCode = 400;
+            res.end(JSON.stringify({ error: 'O parâmetro "titulo" é obrigatório.' }));
+        }
+
+        const resultados = tarefas.filter(tarefa => tarefa.nome.toLocaleLowerCase().includes(titulo.toLocaleLowerCase()));
+        res.statusCode = 200;
+        res.end(JSON.stringify(resultados));
+        
     } else {
         res.statusCode = 404;
         res.end(JSON.stringify({ error: 'Rota não encontrada.' }));
