@@ -1,4 +1,5 @@
 import http from 'node:http';
+import { URL } from 'node:url';
 
 const porta = 3000;
 
@@ -8,6 +9,8 @@ const tarefas = [
 ]
 
 const server = http.createServer((req, res) => {
+
+    const urlOBJ = new URL(req.url, `http://${req.headers.host}`);
 
     res.setHeader('Content-Type', 'application/json');
 
@@ -46,20 +49,39 @@ const server = http.createServer((req, res) => {
 
             }
         })
-    } else if (req.method == 'GET' && req.url.startsWith('/tarefas/buscar')) {
-        const urlOBJ = new URL(req.url, `http://${req.headers.host}`);
-        const titulo = urlOBJ.searchParams.get('titulo');
+    } else if (req.method == 'GET' && urlOBJ.pathname == '/tarefas/busca') {
+
+        const titulo = urlOBJ.searchParams.get('nome');
 
         if (!titulo) {
             res.statusCode = 400;
-            res.end(JSON.stringify({ error: 'O parâmetro "titulo" é obrigatório.' }));
+            res.end(JSON.stringify({ error: 'O parâmetro "nome" é obrigatório.' }));
         }
 
-        const resultados = tarefas.filter(tarefa => tarefa.nome.toLocaleLowerCase().includes(titulo.toLocaleLowerCase()));
+        const resultados = tarefas.filter(tarefa => tarefa.nome.toLocaleLowerCase().includes(nome.toLocaleLowerCase()));
         res.statusCode = 200;
         res.end(JSON.stringify(resultados));
         
-    } else {
+    } else if (req.method == 'DELETE' && urlOBJ.pathname == '/tarefas/delete') {
+        const id = urlOBJ.searchParams.get('id');
+
+        if (!id) {
+            res.statusCode = 400;
+            res.end(JSON.stringify({ error: 'O parâmetro "id" é obrigatório.' }));
+        }
+
+        for (let i = 0; i < tarefas.length; i++) {
+            if (tarefas[i].id == id){
+                const tarefasD = tarefas[i];
+                tarefas.splice(i, 1);
+                res.statusCode = 200;
+                res.end(JSON.stringify({ message: 'Tarefa deletada com sucesso.' }, {tarefaDeletada: tarefasD}));
+                tarefaD = null;
+                return;
+            }
+        }
+    }
+    else {
         res.statusCode = 404;
         res.end(JSON.stringify({ error: 'Rota não encontrada.' }));
     }
