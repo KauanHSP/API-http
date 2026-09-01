@@ -65,24 +65,25 @@ const server = http.createServer((req, res) => {
         res.end(JSON.stringify(resultados));
         
     } else if (req.method == 'DELETE' && urlOBJ.pathname == '/tarefas') {
-        const index = Number(urlOBJ.searchParams.get('index'));
+    const index = Number(urlOBJ.searchParams.get('index'));
 
-        if (!index) {
-            res.statusCode = 400;
-            res.end(JSON.stringify({ error: 'O parâmetro "id" é obrigatório.' }));
-            return;
-        }
+    if (isNaN(index)) {
+        res.statusCode = 400;
+        res.end(JSON.stringify({ error: 'O parâmetro "index" é obrigatório e deve ser um número.' }));
+        return;
+    }
 
-        if (index < 0 || index >= tarefas.length) {
+    if (index < 0 || index >= tarefas.length) {
         res.statusCode = 404;
         res.end(JSON.stringify({ error: 'Índice inválido. Nenhuma tarefa encontrada.' }));
         return;
-
-        const tarefaRemovida = tarefas.splice(index, 1);
-        res.statusCode = 200;
-        res.end(JSON.stringify({ message: 'Tarefa removida com sucesso.', tarefa: tarefaRemovida[0] }));
-        }
     }
+
+    const tarefaRemovida = tarefas.splice(index, 1);
+    res.statusCode = 200;
+    res.end(JSON.stringify({ message: 'Tarefa removida com sucesso.', tarefa: tarefaRemovida[0] }));
+}
+    
     else {
         res.statusCode = 404;
         res.end(JSON.stringify({ error: 'Rota não encontrada.' }));
