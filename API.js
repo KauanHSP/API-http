@@ -95,3 +95,6 @@ const server = http.createServer((req, res) => {
 server.listen(porta, () => {
     console.log(`Servidor rodando na porta ${porta}`);
 })
+
+//EX3: sim o JSON.parse está adequado. o corpo mal formado para no try-catch e responde com "JSON invalido"
+//PS: eu fiz O exercicio 2 com o texto certo mas não consigo fazer qualquer coisa no meu navegador :(
