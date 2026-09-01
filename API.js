@@ -5,7 +5,8 @@ const porta = 3000;
 
 const tarefas = [
     { id: 1, nome: 'lavar louças' },
-    { id: 2, nome: 'comparar uma RTX 5090' }
+    { id: 2, nome: 'comparar uma RTX 5090' },
+    { id: 3, nome: 'testar uma batata'}
 ]
 
 const server = http.createServer((req, res) => {
@@ -51,40 +52,42 @@ const server = http.createServer((req, res) => {
         })
     } else if (req.method == 'GET' && urlOBJ.pathname == '/tarefas/busca') {
 
-        const titulo = urlOBJ.searchParams.get('nome');
+        const nome = urlOBJ.searchParams.get('nome');
 
-        if (!titulo) {
+        if (!nome) {
             res.statusCode = 400;
             res.end(JSON.stringify({ error: 'O parâmetro "nome" é obrigatório.' }));
+            return
         }
 
         const resultados = tarefas.filter(tarefa => tarefa.nome.toLocaleLowerCase().includes(nome.toLocaleLowerCase()));
         res.statusCode = 200;
         res.end(JSON.stringify(resultados));
         
-    } else if (req.method == 'DELETE' && urlOBJ.pathname == '/tarefas/delete') {
-        const id = urlOBJ.searchParams.get('id');
+    } else if (req.method == 'DELETE' && urlOBJ.pathname == '/tarefas') {
+        const index = Number(urlOBJ.searchParams.get('index'));
 
-        if (!id) {
+        if (!index) {
             res.statusCode = 400;
             res.end(JSON.stringify({ error: 'O parâmetro "id" é obrigatório.' }));
+            return;
         }
 
-        for (let i = 0; i < tarefas.length; i++) {
-            if (tarefas[i].id == id){
-                const tarefasD = tarefas[i];
-                tarefas.splice(i, 1);
-                res.statusCode = 200;
-                res.end(JSON.stringify({ message: 'Tarefa deletada com sucesso.' }, {tarefaDeletada: tarefasD}));
-                tarefaD = null;
-                return;
-            }
+        if (index < 0 || index >= tarefas.length) {
+        res.statusCode = 404;
+        res.end(JSON.stringify({ error: 'Índice inválido. Nenhuma tarefa encontrada.' }));
+        return;
+
+        const tarefaRemovida = tarefas.splice(index, 1);
+        res.statusCode = 200;
+        res.end(JSON.stringify({ message: 'Tarefa removida com sucesso.', tarefa: tarefaRemovida[0] }));
         }
     }
     else {
         res.statusCode = 404;
         res.end(JSON.stringify({ error: 'Rota não encontrada.' }));
     }
+    
 
 })
 
